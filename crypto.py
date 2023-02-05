@@ -16,8 +16,12 @@ def eval_input(x,y,message=''):
 def encrypt():
     encoded_data = int.from_bytes(getpass('Enter string to be encrypted:\n').encode(),'big')
     key = int.from_bytes(getpass('Enter Key:\n').encode(),'big')
-    with open('passwords.txt') as pwds:
-        num = len(pwds.read().split('\n'))
+    try:
+        with open('passwords.txt') as pwds:
+            num = len(pwds.read().split('\n'))
+    except FileNotFoundError:
+        os.system('touch passwords.txt')
+        num = 1
     key_hashed = int(float("{:.25f}".format(key%(num*math.pi)))*10**25)
     encrypted_data = encoded_data+key_hashed
     print(f"Here is the encrypted string: {encrypted_data}")
@@ -32,9 +36,9 @@ def encrypt():
 def decrypt():
     while True:
         try:
-            line = str(subprocess.check_output('grep -n \''+input('Enter label (or part of label) of encrypted string:\n')+'\' /Users/zarquon/.Passwords/passwords.txt',shell=True))[2:]
+            line = str(subprocess.check_output('grep -n \''+input('Enter label (or part of label) of encrypted string:\n')+'\' passwords.txt',shell=True))[2:]
         except Exception:
-            print('Input label not found in file. Try again.')
+            print('Input label not found in file or file does not exist. Try again.')
             continue
         if len(line.split('\\n'))!=2:
             print('Input label not specific enough. Try again.')
