@@ -17,26 +17,26 @@ def encrypt():
     encoded_data = int.from_bytes(getpass('Enter string to be encrypted:\n').encode(),'big')
     key = int.from_bytes(getpass('Enter Key:\n').encode(),'big')
     try:
-        with open('passwords.txt') as pwds:
+        with open('encrypted.txt') as pwds:
             num = len(pwds.read().split('\n'))
     except FileNotFoundError:
-        os.system('touch passwords.txt')
+        os.system('touch encrypted.txt')
         num = 1
     key_hashed = int(float("{:.25f}".format(key%(num*math.pi)))*10**25)
     encrypted_data = encoded_data+key_hashed
     print(f"Here is the encrypted string: {encrypted_data}")
-    if eval_input('y','n','Would you like to store the encrypted string in passwords.txt (y/n)?\n'):
+    if eval_input('y','n','Would you like to store the encrypted string in encrypted.txt (y/n)?\n'):
         label = input('Enter label for the encrypted string:\n')
-        with open('passwords.txt','a') as pwds:
+        with open('encrypted.txt','a') as pwds:
             pwds.write(f'{label}: {encrypted_data}\n')
-            print('Successfully updated. Here is what passwords.txt looks like now:\n')
-        with open('passwords.txt') as pwds:
+            print('Successfully updated. Here is what encrypted.txt looks like now:\n')
+        with open('encrypted.txt') as pwds:
             print(pwds.read()+'\n')
 
 def decrypt():
     while True:
         try:
-            line = str(subprocess.check_output('grep -n \''+input('Enter label (or part of label) of encrypted string:\n')+'\' passwords.txt',shell=True))[2:]
+            line = str(subprocess.check_output('grep -n \''+input('Enter label (or part of label) of encrypted string:\n')+'\' encrypted.txt',shell=True))[2:]
         except Exception:
             print('Input label not found in file or file does not exist. Try again.')
             continue
